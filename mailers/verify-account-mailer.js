@@ -60,7 +60,7 @@ module.exports.sendConfirmationEmail = async (
                 <p style="margin-top: 0; margin-bottom: 30px; text-align: center">
                     Thank you for signing up at AvSocial. Please verify your email by clicking on the following link.
                 </p>
-                <a style="text-decoration: none; color: white; margin: 20px 10px; cursor: pointer" href="https://avsocial-media.onrender.com/api/v1/users/verify/user-email/${confirmationCode}">
+                <a style="text-decoration: none; color: white; margin: 20px 10px; cursor: pointer" href="https://avsocial-media-api.onrender.com/api/v1/users/verify/user-email/${confirmationCode}">
                 <button style="border: none;
                     padding: 10px;
                     background-color: rgb(158, 64, 64);
