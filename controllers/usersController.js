@@ -5,6 +5,8 @@ const nodeMailer = require("../mailers/verify-account-mailer");
 const crypto = require("crypto");
 const Relationship = require("../models/Relationship");
 
+const { getUrl } = require("../config/s3");
+
 module.exports.createSession = async (req, res) => {
   try {
     const data = req.body;
@@ -31,6 +33,15 @@ module.exports.createSession = async (req, res) => {
         otherData.confirmationCode
       );
     }
+    if (otherData.profileImage) {
+      const url = await getUrl(otherData.profileImage);
+      otherData.profileImage = url;
+    }
+    if (otherData.coverImage) {
+      const url = await getUrl(otherData.coverImage);
+      otherData.coverImage = url;
+    }
+    console.log(otherData);
     return res.status(200).json({
       success: true,
       token: jwt.sign(otherData, process.env.JWT_KEY),

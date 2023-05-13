@@ -6,6 +6,7 @@ const passportJwt = require("./config/passport-jwt-strategy");
 const db = require("./config/mongoose");
 const cors = require("cors");
 const multer = require("multer");
+const sharp = require("sharp");
 
 const app = express();
 
@@ -17,26 +18,24 @@ const app = express();
 app.use(
   cors({
     origin: "https://avsocial-media.onrender.com",
+    origin: "http://localhost:3000",
   })
 );
 
-// Handle uploading a file using multer, all upload file request will come here and in other requests we will set path for document field
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "../client/public/uploads");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + file.originalname);
-  },
-});
+const { uploadFile } = require("./config/s3");
+
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 app.post(
   "/api/v1/upload",
   passport.authenticate("jwt", { session: false }),
   upload.single("file"),
-  (req, res) => {
-    const file = req.file;
-    return res.status(200).json(file.filename);
+  async (req, res) => {
+    const buffer = await sharp(req.file.buffer)
+      .resize({ height: 1920, width: 1080, fit: "contain" })
+      .toBuffer();
+    const imageName = await uploadFile(buffer);
+    return res.status(200).json(imageName);
   }
 );
 
