@@ -2,6 +2,8 @@ const Comment = require("../models/Comment");
 const Like = require("../models/Like");
 const jwt = require("jsonwebtoken");
 
+const { getUrl } = require("../config/s3");
+
 module.exports.getAllComments = async (req, res) => {
   try {
     const postId = req.query.postId;
@@ -9,6 +11,13 @@ module.exports.getAllComments = async (req, res) => {
       .sort("-createdAt")
       .lean()
       .populate("user", "_id firstName lastName profileImage");
+
+    for (const comment of comments) {
+      if (comment.user.profileImage) {
+        const url = await getUrl(comment.user.profileImage);
+        comment.user.profileImage = url;
+      }
+    }
     return res.status(200).json({
       success: true,
       data: comments,
