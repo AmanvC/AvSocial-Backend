@@ -8,7 +8,7 @@ module.exports.getAllComments = async (req, res) => {
   try {
     const postId = req.query.postId;
     const comments = await Comment.find({ post: postId })
-      .sort("-createdAt")
+      .sort("createdAt")
       .lean()
       .populate("user", "_id firstName lastName profileImage");
 
