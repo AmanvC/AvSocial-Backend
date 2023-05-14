@@ -18,7 +18,6 @@ const app = express();
 app.use(
   cors({
     origin: "https://avsocial-media.onrender.com",
-    origin: "http://localhost:3000",
   })
 );
 
